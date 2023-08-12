@@ -1,5 +1,7 @@
 package com.jecsdev.eleclive.core.di
 
+import com.jecsdev.eleclive.core.network.ApiService
+import com.jecsdev.eleclive.core.network.AppConstants.BASEURL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,10 +16,15 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit {
-        val baseUrl = "https://localhost:44380/"
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASEURL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService{
+        return retrofit.create(ApiService::class.java)
     }
 }

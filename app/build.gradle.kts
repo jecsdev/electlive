@@ -69,6 +69,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.3.0")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
 
+    //Gson
+    implementation("com.squareup.retrofit2:converter-gson")
+
     //Dagger hilt
     implementation("com.google.dagger:hilt-android:2.43.2")
     kapt("com.google.dagger:hilt-android-compiler:2.43.2")
