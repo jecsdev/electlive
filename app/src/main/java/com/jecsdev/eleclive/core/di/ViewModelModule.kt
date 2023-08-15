@@ -1,11 +1,14 @@
 package com.jecsdev.eleclive.core.di
 
-import com.jecsdev.eleclive.data.domain.Repository.Repository
-import com.jecsdev.eleclive.data.domain.UseCases.GetElectionsUseCase
+import android.content.Context
+import com.jecsdev.eleclive.domain.Repository.Repository
+import com.jecsdev.eleclive.domain.useCases.GetElectionsUseCase
+import com.jecsdev.eleclive.utils.GetResourceProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -14,4 +17,10 @@ class ViewModelModule {
     fun provideGetElectionsUseCase(repository: Repository): GetElectionsUseCase {
         return GetElectionsUseCase(repository)
     }
+
+    @Provides
+    fun provideResourceProvider(@ApplicationContext context: Context): GetResourceProvider{
+        return GetResourceProvider(context)
+    }
+
 }

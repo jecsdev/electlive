@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Eleclive</string>
+    <string name="empty_string">\"\"</string>
 </resources>
