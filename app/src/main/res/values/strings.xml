@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Eleclive</string>
     <string name="empty_string">\"\"</string>
+    <string name="election_name">Election Name</string>
+    <string name="election_description">Election Description</string>
+    <string name="election_date">Date</string>
 </resources>
