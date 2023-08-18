@@ -1,5 +1,6 @@
 package com.jecsdev.eleclive.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jecsdev.eleclive.R
@@ -34,10 +35,12 @@ class MainViewModel @Inject constructor(
     val responseCodeStateFlow: StateFlow<Int> = _responseCodeStateFlow
 
     //Represents the message response from API
-    private val _responseMessageStateFlow = MutableStateFlow(getResourceProvider.getString(R.string.empty_string))
+    private val _responseMessageStateFlow =
+        MutableStateFlow(getResourceProvider.getString(R.string.empty_string))
     val responseMessageStateFlow: StateFlow<String> = _responseMessageStateFlow
-    fun getElectionsFromService() {
-        viewModelScope.launch {
+
+    init{
+        viewModelScope.launch{
             _loadingStateFlow.value = true
 
             getElectionsUseCase().collect { apiResponse ->
@@ -49,12 +52,13 @@ class MainViewModel @Inject constructor(
                             _dataStateFlow.value = apiResponse.data
                             _responseCodeStateFlow.value = apiResponse.code
                             _responseMessageStateFlow.value = apiResponse.message
-
+                            Log.i("Response", apiResponse.data.toString())
                         }
                     }
 
                     is ApiResponse.Error -> {
                         _loadingStateFlow.value = false
+                        Log.e("ResponseError", apiResponse.message)
                     }
 
                     is ApiResponse.Loading -> {

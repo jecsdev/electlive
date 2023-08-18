@@ -22,9 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.ui.theme.PurpleGrey40
 
-@Preview(showSystemUi = true)
 @Composable
-fun ElectionCard() {
+fun ElectionCard(name: String, description: String, date: String) {
     val defaultColor = if(!isSystemInDarkTheme()){
         CardDefaults.cardColors(containerColor = Color.White)
     }else{
@@ -39,19 +38,16 @@ fun ElectionCard() {
     ) {
         Column(Modifier.padding(12.dp)) {
             Text(
-                text = stringResource(R.string.election_name),
-                modifier = Modifier.height(IntrinsicSize.Min),
+                text = name,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.election_date),
-                modifier = Modifier.height(IntrinsicSize.Min)
+                text = date
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.election_description),
-                modifier = Modifier.height(IntrinsicSize.Min)
+                text = description
             )
         }
     }

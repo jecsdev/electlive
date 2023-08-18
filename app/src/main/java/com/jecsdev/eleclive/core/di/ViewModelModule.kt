@@ -1,7 +1,7 @@
 package com.jecsdev.eleclive.core.di
 
 import android.content.Context
-import com.jecsdev.eleclive.domain.Repository.Repository
+import com.jecsdev.eleclive.domain.repository.Repository
 import com.jecsdev.eleclive.domain.useCases.GetElectionsUseCase
 import com.jecsdev.eleclive.utils.GetResourceProvider
 import dagger.Module

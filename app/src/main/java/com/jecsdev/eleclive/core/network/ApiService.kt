@@ -1,7 +1,7 @@
 package com.jecsdev.eleclive.core.network
 
 import com.jecsdev.eleclive.data.model.Elections
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface ApiService {
@@ -12,6 +12,6 @@ interface ApiService {
 */
 
     //Retrieves the elections available
-    @GET("/elections")
-    suspend fun getElections() : Call<List<Elections>>
+    @GET("/Elections")
+    suspend fun getElections() : Response<List<Elections>>
 }
