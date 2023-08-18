@@ -1,6 +1,7 @@
 package com.jecsdev.eleclive.ui.views.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
@@ -19,15 +20,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jecsdev.eleclive.R
+import com.jecsdev.eleclive.ui.theme.PurpleGrey40
 
 @Preview(showSystemUi = true)
 @Composable
 fun ElectionCard() {
+    val defaultColor = if(!isSystemInDarkTheme()){
+        CardDefaults.cardColors(containerColor = Color.White)
+    }else{
+        CardDefaults.cardColors(containerColor = PurpleGrey40)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = defaultColor,
         elevation = CardDefaults.elevatedCardElevation(16.dp),
     ) {
         Column(Modifier.padding(12.dp)) {
