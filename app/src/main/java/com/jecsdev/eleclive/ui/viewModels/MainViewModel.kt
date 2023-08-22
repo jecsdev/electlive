@@ -10,6 +10,7 @@ import com.jecsdev.eleclive.domain.useCases.GetElectionsUseCase
 import com.jecsdev.eleclive.data.model.Elections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,49 +23,23 @@ class MainViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    // Represents the loading state flow
-    private val _loadingStateFlow = MutableStateFlow(false)
-    val loadingState: StateFlow<Boolean> = _loadingStateFlow
-
-    // Represents the data sate flow received from API
-    private val _dataStateFlow = MutableStateFlow<List<Elections>>(emptyList())
-    val dataStateFlow: StateFlow<List<Elections>> = _dataStateFlow
-
-    // Represents the response code returned from API
-    private val _responseCodeStateFlow = MutableStateFlow(0)
-    val responseCodeStateFlow: StateFlow<Int> = _responseCodeStateFlow
-
-    //Represents the message response from API
-    private val _responseMessageStateFlow =
-        MutableStateFlow(getResourceProvider.getString(R.string.empty_string))
-    val responseMessageStateFlow: StateFlow<String> = _responseMessageStateFlow
+    private val _electionsFlow = MutableStateFlow<ApiResponse<List<Elections>>>(ApiResponse.Loading)
+    val electionsFlow: Flow<ApiResponse<List<Elections>>> = _electionsFlow
 
     init{
-        viewModelScope.launch{
-            _loadingStateFlow.value = true
+        getElections()
+    }
 
-            getElectionsUseCase().collect { apiResponse ->
-                when (apiResponse) {
-                    is ApiResponse.Successful -> {
-                        if (apiResponse.data != null) {
-                            delay(2000)
-                            _loadingStateFlow.value = false
-                            _dataStateFlow.value = apiResponse.data
-                            _responseCodeStateFlow.value = apiResponse.code
-                            _responseMessageStateFlow.value = apiResponse.message
-                            Log.i("Response", apiResponse.data.toString())
-                        }
-                    }
+    private fun getElections() {
+        viewModelScope.launch {
+            _electionsFlow.value = ApiResponse.Loading
 
-                    is ApiResponse.Error -> {
-                        _loadingStateFlow.value = false
-                        Log.e("ResponseError", apiResponse.message)
-                    }
+            try {
+                val response = getElectionsUseCase()
 
-                    is ApiResponse.Loading -> {
-
-                    }
-                }
+                _electionsFlow.value = response
+            } catch (e: Exception) {
+                _electionsFlow.value = ApiResponse.Error(-1, e.message.toString())
             }
         }
     }

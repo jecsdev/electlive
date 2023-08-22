@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class GetElectionsUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend operator fun invoke(): Flow<ApiResponse<Elections>> {
+    suspend operator fun invoke(): ApiResponse<List<Elections>>{
         return repository.getElections()
     }
 
