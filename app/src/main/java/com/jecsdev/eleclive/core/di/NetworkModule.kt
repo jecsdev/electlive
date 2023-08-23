@@ -2,6 +2,7 @@ package com.jecsdev.eleclive.core.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jecsdev.eleclive.core.network.ApiService
+import com.jecsdev.eleclive.core.network.JsonHeaderInterceptor
 import com.jecsdev.eleclive.utils.AppConstants.BASEURL
 import dagger.Module
 import dagger.Provides
@@ -41,6 +42,7 @@ class NetworkModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(JsonHeaderInterceptor())
             .build()
     }
 }

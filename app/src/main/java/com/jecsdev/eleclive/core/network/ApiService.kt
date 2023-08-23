@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface ApiService {
     //Retrieves the elections available
-    @GET("Elections")
+    @GET("elections")
     suspend fun getElections(): Response<List<Elections>>
 }
