@@ -6,4 +6,5 @@
     <string name="election_date">Date</string>
     <string name="permission_denied">Permiso denegado</string>
     <string name="scan_barcode">Escanear código de barras</string>
+    <string name="barcode_not_allowed">Código de barra no permitido</string>
 </resources>

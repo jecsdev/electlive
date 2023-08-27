@@ -1,8 +1,15 @@
 package com.jecsdev.eleclive.ui.views.screens
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,24 +17,49 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.core.network.ApiResponse
+import com.jecsdev.eleclive.ui.navigation.Screens
 import com.jecsdev.eleclive.ui.viewModels.MainViewModel
 import com.jecsdev.eleclive.ui.views.components.ElectionCard
-import com.jecsdev.eleclive.utils.AppConstants.RESPONSE
+import com.jecsdev.eleclive.utils.constants.AppConstants
+import com.jecsdev.eleclive.utils.constants.AppConstants.RESPONSE
+import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
 
 @Composable
-fun ElectionsScreen(mainViewModel: MainViewModel) {
+fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) {
     val elections = mainViewModel.electionsFlow.collectAsState(ApiResponse.Loading)
 
+    val context = LocalContext.current
+    val resourceProvider = GetResourceProvider(context)
+
+    var scannedData by remember { mutableStateOf(resourceProvider.getString(R.string.empty_string)) }
+    val cameraPermission = Manifest.permission.CAMERA
+
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // Permission granted, start the barcode scanning process
+                navController.navigate(Screens.CameraPreviewScreen.route)
+            } else {
+                // Permission denied, handle accordingly
+                scannedData = resourceProvider.getString(R.string.permission_denied)
+            }
+        }
 
     Column {
         Text(
@@ -37,13 +69,20 @@ fun ElectionsScreen(mainViewModel: MainViewModel) {
         )
         Spacer(modifier = Modifier.height(4.dp))
 
-        when(elections.value){
+        when (elections.value) {
             is ApiResponse.Successful -> {
                 LazyColumn {
                     (elections.value as ApiResponse.Successful).data?.let { electionsList ->
                         items(electionsList, key = { item -> item.id }) { election ->
                             ElectionCard(
-                                name = election.name, description = election.description, date = election.date
+                                Modifier.clickable { checkAndRequestCameraPermission(
+                                    context = context,
+                                    permission = cameraPermission,
+                                    launcher = requestPermissionLauncher
+                                )},
+                                name = election.name,
+                                description = election.description,
+                                date = election.date
                             )
                         }
                     }
@@ -53,10 +92,30 @@ fun ElectionsScreen(mainViewModel: MainViewModel) {
             is ApiResponse.Error -> {
                 Log.e(RESPONSE, "Error")
             }
-            is ApiResponse.Loading -> {
 
+            is ApiResponse.Loading -> {
+                // Do nothing
             }
         }
 
+
+
+    }
+}
+
+fun checkAndRequestCameraPermission(
+    context: Context, permission: String, launcher: ManagedActivityResultLauncher<String, Boolean>
+) {
+    val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
+    if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+        // Open camera because permission is already granted
+        launcher.launch(permission)
+    } else {
+        // Request the permission
+        ActivityCompat.requestPermissions(
+            context as Activity,
+            arrayOf(permission),
+            AppConstants.CAMERA_PERMISSION
+        )
     }
 }

@@ -3,7 +3,7 @@ package com.jecsdev.eleclive.core.di
 import android.content.Context
 import com.jecsdev.eleclive.domain.repository.Repository
 import com.jecsdev.eleclive.domain.useCases.GetElectionsUseCase
-import com.jecsdev.eleclive.utils.GetResourceProvider
+import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,7 @@ class ViewModelModule {
     }
 
     @Provides
-    fun provideResourceProvider(@ApplicationContext context: Context): GetResourceProvider{
+    fun provideResourceProvider(@ApplicationContext context: Context): GetResourceProvider {
         return GetResourceProvider(context)
     }
 

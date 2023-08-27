@@ -1,4 +1,4 @@
-package com.jecsdev.eleclive.utils
+package com.jecsdev.eleclive.utils.providers
 
 import android.content.Context
 

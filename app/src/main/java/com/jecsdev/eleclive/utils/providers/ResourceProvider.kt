@@ -1,4 +1,4 @@
-package com.jecsdev.eleclive.utils
+package com.jecsdev.eleclive.utils.providers
 
 interface ResourceProvider {
     fun getString(resourceId: Int): String

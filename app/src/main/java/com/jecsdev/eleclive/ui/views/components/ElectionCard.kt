@@ -23,29 +23,29 @@ import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.ui.theme.PurpleGrey40
 
 @Composable
-fun ElectionCard(name: String, description: String, date: String) {
+fun ElectionCard(modifier: Modifier, name: String, description: String, date: String) {
     val defaultColor = if(!isSystemInDarkTheme()){
         CardDefaults.cardColors(containerColor = Color.White)
     }else{
         CardDefaults.cardColors(containerColor = PurpleGrey40)
     }
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         colors = defaultColor,
         elevation = CardDefaults.elevatedCardElevation(16.dp),
     ) {
-        Column(Modifier.padding(12.dp)) {
+        Column(modifier.padding(12.dp)) {
             Text(
                 text = name,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(modifier.height(4.dp))
             Text(
                 text = date
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(modifier.height(4.dp))
             Text(
                 text = description
             )

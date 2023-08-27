@@ -1,82 +1,92 @@
 package com.jecsdev.eleclive.ui.views.components
 
-import android.content.Context
+
+import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
-import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LifecycleOwner
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
-import java.nio.ByteBuffer
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import com.jecsdev.eleclive.utils.analyzer.BarcodeAnalyser
+import com.jecsdev.eleclive.utils.constants.AppConstants.EXCEPTION
 import java.util.concurrent.Executors
 
 @Composable
 fun CameraPreview(
-    context: Context, lifecycleOwner: LifecycleOwner, onScanResult: (String) -> Unit
+    navController: NavController
 ) {
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    val scanner = remember { BarcodeScanning.getClient() }
-    val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
+    AndroidView(
+        { context ->
+            // Create an executor to manage camera-related operations on a single background thread.
+            val cameraExecutor = Executors.newSingleThreadExecutor()
 
-
-    val cameraSelector =
-        CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
-
-    val preview = Preview.Builder().build().also { preview ->
-        preview.setSurfaceProvider(getPreviewSurfaceProvider())
-    }
-
-    val imageAnalyzer = ImageAnalysis.Builder().build().also { imageAnalysis ->
-        imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-            val width = imageProxy.width
-            val height = imageProxy.height
-            val yBuffer: ByteBuffer = imageProxy.planes[0].buffer
-            val uvBuffer: ByteBuffer = imageProxy.planes[1].buffer
-
-            val inputImage = InputImage.fromByteBuffer(
-                yBuffer, width, height, rotationDegrees, InputImage.IMAGE_FORMAT_YV12
-            )
-
-            scanner.process(inputImage).addOnSuccessListener { barcodes ->
-                if (barcodes.isNotEmpty()) {
-                    val result = barcodes.first().rawValue ?: "No se detectó ningún código"
-                    onScanResult(result)
-                } else {
-                    onScanResult("No se detectó ningún código")
-                }
-            }.addOnFailureListener {exception ->
-                onScanResult("Error: ${exception.localizedMessage}")
+            // Create a PreviewView instance to display the camera preview.
+            // Set the scale type to ensure the preview fills the view while maintaining the aspect ratio.
+            val previewView = PreviewView(context).also { preview ->
+                preview.scaleType = PreviewView.ScaleType.FILL_CENTER
             }
 
-            imageProxy.close()
-        }
-    }
+            // Obtain an instance of ProcessCameraProvider asynchronously.
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
-    val useCaseGroup = UseCaseGroup.Builder().addUseCase(preview).addUseCase(imageAnalyzer).build()
+            cameraProviderFuture.addListener({
+                // The callback is triggered when the camera provider instance is ready.
 
-    DisposableEffect(Unit) {
-        val cameraProvider = cameraProviderFuture.get()
+                // Get the actual ProcessCameraProvider instance from the future.
+                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner, cameraSelector, useCaseGroup
-        )
+                // Prepare the image preview
+                val preview = Preview.Builder()
+                    .build()
+                    .also { preview ->
+                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                    }
+                // Set image to capture
+                val imageCapture = ImageCapture.Builder().build()
 
-        onDispose {
-            cameraProvider.unbindAll()
-            cameraExecutor.shutdown()
-            scanner.close()
-        }
-    }
+                // Prepare the image for scanning
+                val imageAnalyzer = ImageAnalysis.Builder()
+                    .build()
+                    .also { imageAnalysis ->
+                        imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyser(context) {
+                            navController.navigateUp()
+                        })
+
+                    }
+
+                // Sets camera selector
+                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                try {
+                    // Unbind use cases before rebinding
+                    cameraProvider.unbindAll()
+
+                    // Bind use cases to camera
+                    cameraProvider.bindToLifecycle(
+                        context as ComponentActivity,
+                        cameraSelector,
+                        preview,
+                        imageCapture,
+                        imageAnalyzer
+                    )
+
+                } catch (exc: Exception) {
+                    Log.e(EXCEPTION, exc.message.toString())
+                }
+            }, ContextCompat.getMainExecutor(context))
+            previewView
+        },
+        modifier = Modifier
+            .size(width = 250.dp, height = 250.dp)
+    )
 }
 
-
-private fun getPreviewSurfaceProvider(): Preview.SurfaceProvider {
-    return Preview.SurfaceProvider {}
-}

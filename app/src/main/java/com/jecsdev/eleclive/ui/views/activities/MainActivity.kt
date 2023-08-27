@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.jecsdev.eleclive.ui.navigation.Screens
 import com.jecsdev.eleclive.ui.theme.ElecliveTheme
 import com.jecsdev.eleclive.ui.viewModels.MainViewModel
+import com.jecsdev.eleclive.ui.views.components.CameraPreview
 import com.jecsdev.eleclive.ui.views.screens.ElectionsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +30,21 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ElectionsScreen(mainViewModel)
+                    // Prepare navController for navigation
+                    val navController = rememberNavController()
+
+                    // Prepare NavHost to handle app routes
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screens.ElectionsScreen.route
+                    ) {
+                        composable(route = Screens.ElectionsScreen.route) {
+                            ElectionsScreen(navController, mainViewModel)
+                        }
+                        composable(route = Screens.CameraPreviewScreen.route){
+                            CameraPreview(navController)
+                        }
+                    }
                 }
             }
         }

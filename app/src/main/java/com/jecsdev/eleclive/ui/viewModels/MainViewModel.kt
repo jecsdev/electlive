@@ -1,18 +1,14 @@
 package com.jecsdev.eleclive.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.core.network.ApiResponse
-import com.jecsdev.eleclive.utils.GetResourceProvider
+import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 import com.jecsdev.eleclive.domain.useCases.GetElectionsUseCase
 import com.jecsdev.eleclive.data.model.Elections
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
