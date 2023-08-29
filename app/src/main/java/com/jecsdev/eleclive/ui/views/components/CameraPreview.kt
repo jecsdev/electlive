@@ -9,9 +9,17 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -25,14 +33,14 @@ fun CameraPreview(
     navController: NavController
 ) {
     AndroidView(
-        { context ->
+        factory = { context ->
             // Create an executor to manage camera-related operations on a single background thread.
             val cameraExecutor = Executors.newSingleThreadExecutor()
 
             // Create a PreviewView instance to display the camera preview.
             // Set the scale type to ensure the preview fills the view while maintaining the aspect ratio.
             val previewView = PreviewView(context).also { preview ->
-                preview.scaleType = PreviewView.ScaleType.FILL_CENTER
+                preview.scaleType = PreviewView.ScaleType.FIT_CENTER
             }
 
             // Obtain an instance of ProcessCameraProvider asynchronously.
@@ -88,5 +96,13 @@ fun CameraPreview(
         modifier = Modifier
             .size(width = 250.dp, height = 250.dp)
     )
+        DrawScannerLines(viewWidth = getPxFromDp(dp =364.dp), viewHeight =getPxFromDp(dp = 780.dp))
+}
+
+
+@Composable
+fun getPxFromDp(dp: Dp): Int {
+    val density = LocalDensity.current.density
+    return (dp.value * density).toInt()
 }
 

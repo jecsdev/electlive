@@ -16,6 +16,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.utils.constants.AppConstants.RESPONSE
 import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_FAILURE
+import com.jecsdev.eleclive.utils.constants.AppConstants.TOAST_INTERVAL
 import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
 
@@ -51,23 +52,25 @@ class BarcodeAnalyser(
 
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
-                    if (barcodes.size > 0 && barcodes.first().format == 8) {
-                        val codeScanned = barcodes.first().rawValue
-                            ?: resourceProvider.getString(R.string.empty_string)
-                        showToast(codeScanned)
-                        Log.i(RESPONSE, codeScanned)
-                        callback()
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.barcode_not_allowed), Toast.LENGTH_SHORT
-                        )
-                            .show()
+                    barcodes.forEach { code ->
+                        if (code.format == Barcode.FORMAT_CODABAR) {
+                            val codeScanned = code.rawValue
+                                ?: resourceProvider.getString(R.string.empty_string)
+                            showToast(codeScanned)
+                            Log.i(RESPONSE, codeScanned)
+                            callback()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.barcode_not_allowed), Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
                     Log.e(SCAN_FAILURE, exception.message.toString())
                 }
+
 
         }
         imageProxy.close()
@@ -87,6 +90,6 @@ class BarcodeAnalyser(
                 resourceProvider.getString(R.string.empty_string),
                 Toast.LENGTH_SHORT
             ).cancel()
-        }, 1000)
+        }, TOAST_INTERVAL)
     }
 }
