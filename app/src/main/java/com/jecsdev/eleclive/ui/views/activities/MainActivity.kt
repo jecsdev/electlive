@@ -13,14 +13,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jecsdev.eleclive.ui.navigation.Screens
 import com.jecsdev.eleclive.ui.theme.ElecliveTheme
+import com.jecsdev.eleclive.ui.viewModels.BarcodeViewModel
 import com.jecsdev.eleclive.ui.viewModels.MainViewModel
-import com.jecsdev.eleclive.ui.views.components.CameraPreview
+import com.jecsdev.eleclive.ui.views.screens.BarcodeScanner
 import com.jecsdev.eleclive.ui.views.screens.ElectionsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
+    private val barcodeViewModel: BarcodeViewModel by  viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,8 +43,8 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screens.ElectionsScreen.route) {
                             ElectionsScreen(navController, mainViewModel)
                         }
-                        composable(route = Screens.CameraPreviewScreen.route){
-                            CameraPreview(navController)
+                        composable(route = Screens.BarcodeScanner.route){
+                            BarcodeScanner(navController, barcodeViewModel)
                         }
                     }
                 }

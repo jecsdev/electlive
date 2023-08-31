@@ -14,8 +14,10 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.jecsdev.eleclive.R
-import com.jecsdev.eleclive.utils.constants.AppConstants.RESPONSE
+import com.jecsdev.eleclive.data.model.Voting
+import com.jecsdev.eleclive.ui.viewModels.BarcodeViewModel
 import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_FAILURE
+import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_RESULT
 import com.jecsdev.eleclive.utils.constants.AppConstants.TOAST_INTERVAL
 import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
@@ -28,6 +30,7 @@ import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 @ExperimentalGetImage
 class BarcodeAnalyser(
     private val context: Context,
+    private val barcodeViewModel: BarcodeViewModel,
     val callback: () -> Unit
 ) : ImageAnalysis.Analyzer {
 
@@ -56,8 +59,10 @@ class BarcodeAnalyser(
                         if (code.format == Barcode.FORMAT_CODABAR) {
                             val codeScanned = code.rawValue
                                 ?: resourceProvider.getString(R.string.empty_string)
+                            val voting = Voting(code.hashCode(), "Usuario demo", codeScanned, "1002", "Colegio demo")
+                            barcodeViewModel.createVoting(voting)
                             showToast(codeScanned)
-                            Log.i(RESPONSE, codeScanned)
+                            Log.i(SCAN_RESULT, codeScanned)
                             callback()
                         } else {
                             Toast.makeText(
@@ -83,13 +88,10 @@ class BarcodeAnalyser(
 
     @SuppressLint("ShowToast")
     private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+        toast.show()
         handler.postDelayed({
-            val toast = Toast.makeText(
-                context,
-                resourceProvider.getString(R.string.empty_string),
-                Toast.LENGTH_SHORT
-            ).cancel()
+            toast.cancel()
         }, TOAST_INTERVAL)
     }
 }

@@ -1,6 +1,7 @@
-package com.jecsdev.eleclive.ui.views.components
+package com.jecsdev.eleclive.ui.views.screens
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.camera.core.CameraSelector
@@ -9,29 +10,28 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.jecsdev.eleclive.ui.viewModels.BarcodeViewModel
+import com.jecsdev.eleclive.ui.views.components.DrawScannerLines
 import com.jecsdev.eleclive.utils.analyzer.BarcodeAnalyser
 import com.jecsdev.eleclive.utils.constants.AppConstants.EXCEPTION
 import java.util.concurrent.Executors
 
+@SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun CameraPreview(
-    navController: NavController
+fun BarcodeScanner(
+    navController: NavController,
+    barcodeViewModel: BarcodeViewModel
 ) {
+
     AndroidView(
         factory = { context ->
             // Create an executor to manage camera-related operations on a single background thread.
@@ -65,7 +65,7 @@ fun CameraPreview(
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .build()
                     .also { imageAnalysis ->
-                        imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyser(context) {
+                        imageAnalysis.setAnalyzer(cameraExecutor, BarcodeAnalyser(context, barcodeViewModel) {
                             navController.navigateUp()
                         })
 
@@ -96,7 +96,7 @@ fun CameraPreview(
         modifier = Modifier
             .size(width = 250.dp, height = 250.dp)
     )
-        DrawScannerLines(viewWidth = getPxFromDp(dp =364.dp), viewHeight =getPxFromDp(dp = 780.dp))
+        DrawScannerLines(viewWidth = getPxFromDp(dp =364.dp), viewHeight = getPxFromDp(dp = 780.dp))
 }
 
 

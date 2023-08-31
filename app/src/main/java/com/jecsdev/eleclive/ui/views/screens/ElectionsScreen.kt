@@ -36,7 +36,7 @@ import com.jecsdev.eleclive.ui.navigation.Screens
 import com.jecsdev.eleclive.ui.viewModels.MainViewModel
 import com.jecsdev.eleclive.ui.views.components.ElectionCard
 import com.jecsdev.eleclive.utils.constants.AppConstants
-import com.jecsdev.eleclive.utils.constants.AppConstants.RESPONSE
+import com.jecsdev.eleclive.utils.constants.NetworkConstants.RESPONSE
 import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
 
@@ -54,7 +54,7 @@ fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) 
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 // Permission granted, start the barcode scanning process
-                navController.navigate(Screens.CameraPreviewScreen.route)
+                navController.navigate(Screens.BarcodeScanner.route)
             } else {
                 // Permission denied, handle accordingly
                 scannedData = resourceProvider.getString(R.string.permission_denied)
