@@ -59,10 +59,10 @@ class BarcodeAnalyser(
                         if (code.format == Barcode.FORMAT_CODABAR) {
                             val codeScanned = code.rawValue
                                 ?: resourceProvider.getString(R.string.empty_string)
-                            val voting = Voting(code.hashCode(), "Usuario demo", codeScanned, "1002", "Colegio demo")
+                            val voting = Voting( "Usuario demo", codeScanned, "1002", "Colegio demo")
                             barcodeViewModel.createVoting(voting)
                             showToast(codeScanned)
-                            Log.i(SCAN_RESULT, codeScanned)
+                            Log.i(SCAN_RESULT, voting.toString())
                             callback()
                         } else {
                             Toast.makeText(

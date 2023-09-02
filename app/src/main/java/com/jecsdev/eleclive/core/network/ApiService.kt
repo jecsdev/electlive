@@ -10,7 +10,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
-    //Retrieves the elections available
+    /**
+     * Retrieves the elections available
+     */
     @GET(ELECTIONS)
     suspend fun getElections(): Response<List<Elections>>
 
