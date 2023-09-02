@@ -96,9 +96,13 @@ fun BarcodeScanner(
         modifier = Modifier
             .size(width = 250.dp, height = 250.dp)
     )
+        // Draw the Scanner lines
         DrawScannerLines(viewWidth = getPxFromDp(dp =364.dp), viewHeight = getPxFromDp(dp = 780.dp))
 }
 
+/***
+ * @param dp is the dp value to convert to px
+ */
 
 @Composable
 fun getPxFromDp(dp: Dp): Int {
