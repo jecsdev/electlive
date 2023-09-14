@@ -12,7 +12,7 @@ class ElectionsUseCase @Inject constructor(private val repository: Repository) {
         return repository.getElections()
     }
 
-    suspend fun createVoting(voting: Voting): Response<Voting> {
+    suspend fun createVoting(voting: Voting): Response<Unit> {
          return repository.createVoting(voting)
     }
 

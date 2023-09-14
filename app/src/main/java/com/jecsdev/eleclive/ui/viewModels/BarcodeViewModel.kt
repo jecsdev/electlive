@@ -1,11 +1,11 @@
 package com.jecsdev.eleclive.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jecsdev.eleclive.R
 import com.jecsdev.eleclive.data.model.Voting
 import com.jecsdev.eleclive.domain.useCases.ElectionsUseCase
-import com.jecsdev.eleclive.utils.providers.GetResourceProvider
+import com.jecsdev.eleclive.utils.constants.NetworkConstants.RESPONSE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,12 +17,11 @@ import javax.inject.Inject
  * @param electionsUseCase handle the useCase for elections
  */
 @HiltViewModel
-class BarcodeViewModel @Inject constructor(private val electionsUseCase: ElectionsUseCase,
-    private val resourceProvider: GetResourceProvider) :
+class BarcodeViewModel @Inject constructor(private val electionsUseCase: ElectionsUseCase) :
     ViewModel() {
-    private val emptyString = resourceProvider.getString(R.string.empty_string)
-    private val _votingState =
-        MutableStateFlow<Response<Voting>>(Response.success(Voting(emptyString, emptyString, emptyString, emptyString)))
+
+    // This variable handles the state from voting request
+    private val _votingState = MutableStateFlow<Response<Unit>>(Response.success(Unit))
 
     /**
      * This function creates voting
@@ -31,8 +30,9 @@ class BarcodeViewModel @Inject constructor(private val electionsUseCase: Electio
 
     fun createVoting(voting: Voting) {
         viewModelScope.launch {
-            val result = electionsUseCase.createVoting(voting)
-            _votingState.value = result
+            val response = electionsUseCase.createVoting(voting)
+            _votingState.value = response
+            Log.i(RESPONSE, _votingState.value.code().toString())
         }
     }
 }

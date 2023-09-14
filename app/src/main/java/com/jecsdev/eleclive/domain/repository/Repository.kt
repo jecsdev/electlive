@@ -39,7 +39,7 @@ class Repository @Inject constructor(private val apiService: ApiService) {
      *  Create new voter for handle his vatId
      *  @param voting is the voter object
      */
-    suspend fun createVoting(voting: Voting): Response<Voting> {
+    suspend fun createVoting(voting: Voting): Response<Unit> {
         return apiService.createVoting(voting)
     }
 

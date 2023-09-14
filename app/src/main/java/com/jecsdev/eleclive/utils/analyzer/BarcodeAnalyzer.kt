@@ -18,8 +18,6 @@ import com.jecsdev.eleclive.data.model.Voting
 import com.jecsdev.eleclive.ui.viewModels.BarcodeViewModel
 import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_FAILURE
 import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_RESULT
-import com.jecsdev.eleclive.utils.constants.AppConstants.TOAST_INTERVAL
-import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
 
 /**
@@ -37,7 +35,9 @@ class BarcodeAnalyser(
     // Preparing the handler for toast time control and resource providers
 
     private val handler = Handler(Looper.getMainLooper())
-    private val resourceProvider = GetResourceProvider(context)
+
+    // This flag captures the scanning event preventing duplicate data
+    private var isScanning = true
 
     /**
      * This method prepare all the necessary for the scanning
@@ -50,27 +50,42 @@ class BarcodeAnalyser(
 
         val scanner = BarcodeScanning.getClient(options)
         val mediaImage = imageProxy.image
+        val regex = "[^0-9]".toRegex()
+        val emptyString = context.getString(R.string.empty_string)
         mediaImage?.let {
             val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
-                    barcodes.forEach { code ->
-                        if (code.format == Barcode.FORMAT_CODABAR) {
-                            val codeScanned = code.rawValue
-                                ?: resourceProvider.getString(R.string.empty_string)
-                            val voting = Voting( "Usuario demo", codeScanned, "1002", "Colegio demo")
-                            barcodeViewModel.createVoting(voting)
-                            showToast(codeScanned)
-                            Log.i(SCAN_RESULT, voting.toString())
-                            callback()
+
+                    if (isScanning) {
+                        val code = barcodes.firstOrNull()
+                        if (code?.format == Barcode.FORMAT_CODABAR) {
+                            val codeScanned = code.displayValue?.replace(
+                                regex,
+                                emptyString
+                            )
+                                ?: emptyString
+                            if (codeScanned.length != 11) {
+                                showToast(codeScanned, 3000)
+                            } else {
+                                val voting = Voting(emptyString, codeScanned, emptyString, emptyString)
+
+                                barcodeViewModel.createVoting(voting)
+
+                                showToast(codeScanned, 3000)
+                                Log.i(SCAN_RESULT, voting.toString())
+
+                                isScanning = false
+                                callback()
+                            }
+
                         } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.barcode_not_allowed), Toast.LENGTH_SHORT
-                            ).show()
+                            showToast(context.getString(R.string.barcode_not_allowed), 1000)
                         }
                     }
+
+
                 }
                 .addOnFailureListener { exception ->
                     Log.e(SCAN_FAILURE, exception.message.toString())
@@ -84,14 +99,15 @@ class BarcodeAnalyser(
     /**
      * This method shows a toast with a determined value handling the time displayed
      * @param message is the message that's going to be showed depending the case
+     * @param toastInterval handles the seconds that toast is showing on screen
      */
 
     @SuppressLint("ShowToast")
-    private fun showToast(message: String) {
+    private fun showToast(message: String, toastInterval: Long) {
         val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
         toast.show()
         handler.postDelayed({
             toast.cancel()
-        }, TOAST_INTERVAL)
+        }, toastInterval)
     }
 }

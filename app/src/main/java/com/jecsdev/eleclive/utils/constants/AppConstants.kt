@@ -6,9 +6,8 @@ object AppConstants {
     const val EXCEPTION = "Exception"
 
     // Scan constants
-    const val SCAN_RESULT = "ScanResult"
-    const val SCAN_FAILURE = "ScanFailure"
-    const val TOAST_INTERVAL: Long = 1000
+    const val SCAN_RESULT = "scanResult"
+    const val SCAN_FAILURE = "scanFailure"
 
     // Request codes
     const val CAMERA_PERMISSION = 1

@@ -16,7 +16,10 @@ interface ApiService {
     @GET(ELECTIONS)
     suspend fun getElections(): Response<List<Elections>>
 
+    /**
+     * Creates the voting data 
+     */
     @POST(VOTING)
-    suspend fun createVoting(@Body voting: Voting): Response<Voting>
+    suspend fun createVoting(@Body voting: Voting): Response<Unit>
 
 }
