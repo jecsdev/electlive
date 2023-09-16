@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -73,16 +74,16 @@ fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) 
             is ApiResponse.Successful -> {
                 LazyColumn {
                     (elections.value as ApiResponse.Successful).data?.let { electionsList ->
-                        items(electionsList, key = { item -> item.id }) { election ->
+                        items(electionsList, key = { item -> item.id }) {
                             ElectionCard(
-                                Modifier.clickable { checkAndRequestCameraPermission(
-                                    context = context,
-                                    permission = cameraPermission,
-                                    launcher = requestPermissionLauncher
-                                )},
-                                name = election.name,
-                                description = election.description,
-                                date = election.date
+                                context,
+                                Modifier.clickable {
+                                    checkAndRequestCameraPermission(
+                                        context = context,
+                                        permission = cameraPermission,
+                                        launcher = requestPermissionLauncher
+                                    )
+                                }
                             )
                         }
                     }
@@ -96,11 +97,28 @@ fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) 
             is ApiResponse.Loading -> {
                 // Do nothing
             }
+
         }
 
+        Spacer(Modifier.weight(0.5f))
 
-
+        Text(
+            text = getVersionName(context),
+            Modifier.padding(bottom = 16.dp)
+                .align(Alignment.CenterHorizontally)
+        )
     }
+}
+
+/**
+ * This methods retrieves the current app version name
+ * @param context to get the Instance from screen
+ */
+
+fun getVersionName(context: Context): String {
+    val versionKey = context.getString(R.string.app_version)
+    val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    return versionKey + versionName
 }
 
 fun checkAndRequestCameraPermission(

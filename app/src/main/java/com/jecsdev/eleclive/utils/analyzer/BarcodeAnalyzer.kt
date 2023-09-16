@@ -73,7 +73,7 @@ class BarcodeAnalyser(
 
                                 barcodeViewModel.createVoting(voting)
 
-                                showToast(codeScanned, 3000)
+                                showToast(context.getString(R.string.scan_successful), 3000)
                                 Log.i(SCAN_RESULT, voting.toString())
 
                                 isScanning = false

@@ -7,4 +7,7 @@
     <string name="permission_denied">Permiso denegado</string>
     <string name="scan_barcode">Escanear código de barras</string>
     <string name="barcode_not_allowed">Código de barra no permitido</string>
+    <string name="scan_successful">Escaneo completado</string>
+    <string name="press_for_scan">"Presione para escanear"</string>
+    <string name="app_version">Versión</string>
 </resources>

@@ -14,7 +14,7 @@ android {
         minSdk = 22
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -24,7 +24,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -54,8 +54,8 @@ android {
 
 dependencies {
     // Kotlin & Lifecycle
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
 
     // Compose
@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
