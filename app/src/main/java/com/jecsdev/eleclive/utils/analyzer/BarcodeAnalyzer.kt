@@ -68,12 +68,13 @@ class BarcodeAnalyser(
                                 ?: emptyString
                             if (codeScanned.length != 11) {
                                 showToast(codeScanned, 3000)
+
                             } else {
                                 val voting = Voting(emptyString, codeScanned, emptyString, emptyString)
 
                                 barcodeViewModel.createVoting(voting)
 
-                                showToast(context.getString(R.string.scan_successful), 3000)
+                                showToast(context.getString(R.string.scan_successful), 10000)
                                 Log.i(SCAN_RESULT, voting.toString())
 
                                 isScanning = false
