@@ -121,6 +121,12 @@ fun getVersionName(context: Context): String {
     return versionKey + versionName
 }
 
+/**
+ * This methods retrieves the current app version name
+ * @param context to get the Instance from screen
+ * @param permission permission parameter received
+ * @param launcher manages the activity result for launch
+ */
 fun checkAndRequestCameraPermission(
     context: Context, permission: String, launcher: ManagedActivityResultLauncher<String, Boolean>
 ) {
