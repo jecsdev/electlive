@@ -90,7 +90,7 @@ fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) 
             }
 
             is ApiResponse.Error -> {
-                Log.e(RESPONSE, "Error")
+                Log.e(RESPONSE, (elections.value as ApiResponse.Error).message)
             }
 
             is ApiResponse.Loading -> {
