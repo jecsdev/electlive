@@ -21,7 +21,7 @@ import com.jecsdev.eleclive.utils.constants.AppConstants.SCAN_RESULT
 
 
 /**
- * This class handle the BarcodeScanner process
+ * This class handles the BarcodeScanner process
  * @param context is the activity context
  * @param callback retrieves the action after code scanned
  */
@@ -70,7 +70,7 @@ class BarcodeAnalyser(
                                 showToast(codeScanned, 3000)
 
                             } else {
-                                val voting = Voting(emptyString, codeScanned, emptyString, emptyString)
+                                val voting = Voting(emptyString, codeScanned, emptyString, emptyString, emptyString)
 
                                 barcodeViewModel.createVoting(voting)
 

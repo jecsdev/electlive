@@ -14,6 +14,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+/**
+ * This class handles the Dependency Injection for networking
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {

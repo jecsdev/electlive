@@ -39,7 +39,9 @@ import com.jecsdev.eleclive.utils.constants.AppConstants
 import com.jecsdev.eleclive.utils.constants.NetworkConstants.RESPONSE
 import com.jecsdev.eleclive.utils.providers.GetResourceProvider
 
-
+/**
+ * Elections screen composable
+ */
 @Composable
 fun ElectionsScreen(navController: NavController, mainViewModel: MainViewModel) {
     val elections = mainViewModel.electionsFlow.collectAsState(ApiResponse.Loading)

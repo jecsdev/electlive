@@ -25,6 +25,10 @@ import com.jecsdev.eleclive.utils.analyzer.BarcodeAnalyser
 import com.jecsdev.eleclive.utils.constants.AppConstants.EXCEPTION
 import java.util.concurrent.Executors
 
+
+/**
+ * This composable shows the camera preview
+ */
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
 fun BarcodeScanner(
@@ -103,7 +107,6 @@ fun BarcodeScanner(
 /***
  * @param dp is the dp value to convert to px
  */
-
 @Composable
 fun getPxFromDp(dp: Dp): Int {
     val density = LocalDensity.current.density
