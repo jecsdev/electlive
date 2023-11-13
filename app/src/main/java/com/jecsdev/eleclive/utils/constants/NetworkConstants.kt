@@ -5,7 +5,7 @@ package com.jecsdev.eleclive.utils.constants
  */
 object NetworkConstants {
     // Connections constants
-    const val BASEURL = "https://10.0.0.7:45455/"
+    const val BASEURL = "http://178.16.142.108:5000/"
     const val RESPONSE = "Response"
 
 

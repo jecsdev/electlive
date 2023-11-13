@@ -70,7 +70,7 @@ class BarcodeAnalyser(
                                 showToast(codeScanned, 3000)
 
                             } else {
-                                val voting = Voting(emptyString, codeScanned, emptyString, emptyString, emptyString)
+                                val voting = Voting(emptyString, emptyString, codeScanned, emptyString, emptyString)
 
                                 barcodeViewModel.createVoting(voting)
 
