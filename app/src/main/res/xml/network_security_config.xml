@@ -5,13 +5,15 @@
             <certificates src="system" />
             <domain includeSubdomains="true">10.0.0.7:45457</domain>
             <domain includeSubdomains="true">10.0.0.3:45457</domain>
-            <certificates src="@raw/dev_ca" />
+            <domain includeSubdomains="true">10.0.0.48:45457</domain>
+            <certificates src="@raw/conv_ca" />
         </trust-anchors>
     </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">10.0.0.7</domain>
         <domain includeSubdomains="true">10.0.0.3</domain>
         <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">10.0.0.48</domain>
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">178.16.142.108</domain>
     </domain-config>
